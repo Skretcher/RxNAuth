@@ -28,7 +28,7 @@ RxNAuth/
 ### 1. **Initialize React Native App (Without Expo)**
 
 ```bash
-npx react-native init RxNAuth
+npx @react-native-community/cli init RxNAuth
 cd RxNAuth
 ```
 
@@ -39,11 +39,13 @@ cd RxNAuth
 ```bash
 # Navigation
 npm install @react-navigation/native
-npm install react-native-screens react-native-safe-area-context react-native-gesture-handler react-native-reanimated
+npm install react-native-screens react-native-safe-area-context react-native-gesture-handler react-native-reanimated react-native-vector-icons
 npm install @react-navigation/native-stack
 
 # Firebase SDK
 npm install firebase
+npm install @react-native-firebase/app
+npm install @react-native-firebase/auth
 
 # AsyncStorage for auth persistence
 npm install @react-native-async-storage/async-storage
