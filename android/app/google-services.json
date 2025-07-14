@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "160932968063",
+    "project_id": "baisc-auth",
+    "storage_bucket": "baisc-auth.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:160932968063:android:d92a022ef8150cae57f14a",
+        "android_client_info": {
+          "package_name": "com.rxnauth"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXjGqZZHl9dJI3WE2zEeBSDq3hypE_KEE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
