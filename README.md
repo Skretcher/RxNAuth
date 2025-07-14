@@ -1,97 +1,201 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# 📱 RxNAuth – React Native Firebase Authentication App
 
-# Getting Started
+A simple React Native authentication app using **email/password login** with **Firebase Authentication**. Supports registration, login, and persistent login state.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+---
 
-## Step 1: Start Metro
-
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
-
-To start the Metro dev server, run the following command from the root of your React Native project:
-
-```sh
-# Using npm
-npm start
-
-# OR using Yarn
-yarn start
+## 📂 Folder Structure
+```
+RxNAuth/
+├── android/
+├── ios/
+├── src/
+│   ├── screens/
+│   │   ├── LoginScreen.js
+│   │   ├── SignupScreen.js
+│   │   └── HomeScreen.js
+│   └── utils/
+│       └── firebase.js
+├── App.jsx
+├── package.json
+├── README.md
 ```
 
-## Step 2: Build and run your app
+---
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+## 🚀 Getting Started
 
-### Android
+### 1. **Initialize React Native App (Without Expo)**
 
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
+```bash
+npx react-native init RxNAuth
+cd RxNAuth
 ```
 
-### iOS
+---
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+### 2. **Install Dependencies**
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+```bash
+# Navigation
+npm install @react-navigation/native
+npm install react-native-screens react-native-safe-area-context react-native-gesture-handler react-native-reanimated
+npm install @react-navigation/native-stack
 
-```sh
-bundle install
+# Firebase SDK
+npm install firebase
+
+# AsyncStorage for auth persistence
+npm install @react-native-async-storage/async-storage
+npx pod-install
 ```
 
-Then, and every time you update your native dependencies, run:
+---
 
-```sh
-bundle exec pod install
+### 3. **Android Firebase Setup**
+
+#### ✅ Firebase Console
+- Create Firebase project → `baisc-auth`
+- Add Android app with package name: `com.rxnauth`
+- Download `google-services.json` and place it in:  
+  `android/app/google-services.json`
+
+#### ✅ `android/build.gradle` (Project level)
+```groovy
+buildscript {
+  dependencies {
+    classpath 'com.google.gms:google-services:4.3.15' // ✅ Add this line
+  }
+}
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+#### ✅ `android/app/build.gradle` (App level)
+At the bottom:
 
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
+```groovy
+apply plugin: 'com.google.gms.google-services' // ✅ Required to enable Firebase
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+In `plugins {}` (if you're using newer syntax):
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+```groovy
+plugins {
+  id 'com.google.gms.google-services'
+}
+```
 
-## Step 3: Modify your app
+---
 
-Now that you have successfully run the app, let's make changes!
+## 🔥 Firebase Integration
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+### 📁 `src/utils/firebase.js`
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+```js
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getReactNativePersistence, initializeAuth } from 'firebase/auth/react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+const firebaseConfig = {
+  apiKey: "AIzaSyDu2ssvpXQvoKhOuTl6qyFUYP-A_oIqWdE",
+  authDomain: "baisc-auth.firebaseapp.com",
+  projectId: "baisc-auth",
+  storageBucket: "baisc-auth.appspot.com",
+  messagingSenderId: "160932968063",
+  appId: "1:160932968063:web:f1268daddff62ee557f14a",
+  measurementId: "G-D0P8F5R38H"
+};
 
-## Congratulations! :tada:
+const app = initializeApp(firebaseConfig);
 
-You've successfully run and modified your React Native App. :partying_face:
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage),
+});
 
-### Now what?
+export { auth };
+```
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+---
 
-# Troubleshooting
+## 🔀 Navigation Setup
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+### 📁 App.jsx
 
-# Learn More
+```jsx
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import LoginScreen from './src/screens/LoginScreen';
+import SignupScreen from './src/screens/SignupScreen';
+import HomeScreen from './src/screens/HomeScreen';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './src/utils/firebase';
+import { useState, useEffect } from 'react';
 
-To learn more about React Native, take a look at the following resources:
+const Stack = createNativeStackNavigator();
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+export default function App() {
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, currentUser => {
+      setUser(currentUser);
+      if (initializing) setInitializing(false);
+    });
+    return unsubscribe;
+  }, []);
+
+  if (initializing) return null;
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName={user ? 'Home' : 'Login'}>
+        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Signup" component={SignupScreen} options={{ title: 'Create Account' }} />
+        <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Home' }} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+```
+
+---
+
+## 🧠 Mistakes & Fixes
+
+| ❌ Mistake                              | ✅ Fix                                                                           |
+| -------------------------------------- | ------------------------------------------------------------------------------- |
+| `"auth.default is not a function"`     | Export `auth` properly from `firebase.js`, not as `default`                     |
+| `"Firebase already initialized"`       | Use `initializeAuth` with AsyncStorage only once                                |
+| `"Screen 'Home' not found"`            | Ensure `'Home'` is defined inside `Stack.Navigator`                             |
+| Firebase auth not persisting           | Use `@react-native-async-storage/async-storage` and pass it to `initializeAuth` |
+| Forgot to apply Google Services plugin | Add `apply plugin: 'com.google.gms.google-services'` in app-level Gradle        |
+| Signup not working                     | Make sure to `await` and handle `createUserWithEmailAndPassword` correctly      |
+
+---
+
+## ✅ Features Implemented
+
+- [x] Signup with Firebase
+- [x] Login with Firebase
+- [x] Navigation between screens
+- [x] Firebase auth state persistence using AsyncStorage
+- [x] Auto-login user if already authenticated
+
+---
+
+## 📌 Future Enhancements
+
+- Add Logout button
+- Add Forgot Password feature
+- Validate inputs with regex
+- Handle loading state
+
+---
+
+
+
+## 📄 License
+
+This project is for learning purposes. You can modify and extend it freely.
