@@ -198,6 +198,12 @@ export default function App() {
 
 
 
-## 📄 License
+## 📝 License
 
-This project is for learning purposes. You can modify and extend it freely.
+This project is open-source and free to use under the [MIT License](LICENSE).
+
+---
+
+## 👨‍💻 Developed by
+
+**Devendra Kumar Singh**
